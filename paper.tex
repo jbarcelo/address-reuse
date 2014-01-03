@@ -619,20 +619,70 @@ In the following sections we offer an overview of the Bitcoin elements that are 
 Many details and advanced features will be skipped to keep the discussion simple and focused.
 
 \section{A Bitcoin Transaction}
-A Bitcoin transaction transfers funds from one or more input transactions to one or more output addresses.
-In the most usual case, an address is linked to a private key.
+A Bitcoin transaction transfers funds from one or more inputs to one or more outputs.
+Inputs and outputs are linked to addresses, and normally those addresses are associated to a public key.
 The owner of the private key owns the funds that are stored in the address.
 The owner of the address can take a transaction that outputs funds to her address and use it as an input for another transaction that transfer those funds to some other address.
 This newly created transaction must be signed with the private key of the input address (or addresses) in order to be accepted for the network.
 
-The addresses that are linked to a single private key are alphanumeric (Bese58) chains starting by 1.
-Addresses are around 30 characters long.
-For convenience, in our examples we will use shorter addresses such as \texttt{1Ann}.
-Imagine that Ann transfers one bitcoin from her address \texttt{1Ann} to Bob's address \texttt{1Bob}.
-Bob wants to transfer that bitcoin to Chris' address \texttt{1Chris}.
-As Bob has the private key associated to the address \texttt{1Bob}, he can create a transaction that has as an input Ann's transaction and outputs the funds to \texttt{1Chris}.
-Bob can provide a valid signature for address \texttt{1Bob} and broadcast the transaction to the Bitcoin peer-to-peer network.
+The addresses that are linked to a single private key are alphanumeric (Base58) chains starting by 1 and around 30 characters long.
+For convenience, in our examples we will use shorter addresses such as \texttt{1HB5X}.
+Imagine that Bob and Chris generate a pair of private and public bitcoin keys each.
+They derive their addresses from their public keys and obtain \texttt{1U8yx} and \texttt{1Y36v} respectively.
 
+Ann sends one bitcoin to Bob's address \texttt{1U8yx}.
+Bob wants to transfer that bitcoin to Chris' address \texttt{1Y36v}.
+As Bob has the private key associated to the address \texttt{1U8yx}, he can create a transaction that has as an input Ann's transaction and outputs the funds to \texttt{1Y36v}.
+Bob can provide a valid signature for address \texttt{1Bob} and broadcast the transaction to the Bitcoin peer-to-peer network.
+This simple example is illustrated in Fig.~\ref{fig:simple-transaction}.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{figures/simple-transaction}
+\caption{The transaction on the left has been prepared by Ann to send funds to Bob. Bob uses the output of the left transaction to create a new transaction that sends the funds to Chris.}
+\label{fig:simple-transaction}
+\end{figure}
+
+\section{Transactions with Multiple Inputs and Multiple Outputs}
+
+The transaction presented in the previous section is the simplest in the sense that it has a single input and a single output.
+It is often the case that Bitcoin transactions have multiple inputs and multiple outputs.
+For example, if Bob wants to split the bitcoin that he has received from Alice in two parts, half for Chris and half for Dave, he can construct a transaction with two outputs of 0,5 bitcoins.
+Similarly, if Bob receives two separate transactions of 0,5 bitcoins each, he can use those two outputs as inputs of a single transaction to send one bitcoin to Chris.
+
+A recurrent situation in the Bitcoin network is that Bob has received a one bitcoin transaction and wants to send only half a bitcoin to Chris.
+Bob can prepare a transaction in which he takes the one bitcoin transaction as an input, and splits it in two different outputs: one for Chris and one for himself.
+The second output is usually referred to as \emph{the change} and it remains available for Bob to spend at a later time.
+
+\section{Blockchain: The Public Ledger}
+
+Every valid transaction is stored in a public ledger which is normally refferred to as the \emph{ Blockchain}.
+When Ann sends a bitcoin to the address \texttt{1U8yx}, her transaction is included in the Blockchain.
+Everyone in the peer-to-peer network knows that there is one output worth one bitcoin that is available for whoever has the private key associated to the \texttt{1U8yx} address.
+When Bob creates a new transaction spending that output and it is accepted by the network and included in the Blockchain, the network knows that the one bitcoin output for \texttt{1U8yx} has been used and therefore it cannot be used again.
+
+To prevent that an output can be spent twice it is necessary that all the Bitcoin network participants are aware of all existing transactions.
+This makes it possible to track and verify which outputs are available for spending and therefore the amount of bitcoins available in each of the existing addresses.
+
+The fact that all the transactions are public has some serious privacy implications.
+The original bitcoin paper \cite{nakamoto2008bpp} points out that the security relies on keeping the addresses anonymous and that a new key pair should be used for each transaction.
+In other words, that address re-use should be avoided.
+
+\section{Privacy Leakage}
+
+
+
+
+However, keeping the addresses completely anonymous is not always possible.
+In the simplest example in which Bob wants to receive a payment from Alice, he has to generate an address and hand it to Alice.
+At that point, Alice knows that that particular address, in our previous example \texttt{1U8yx} belongs to Bob.
+Then Alice can monitor the Blockchain for transactions involving
+
+
+
+Imagine that Ann wants to send another bitcoin to Bob.
+Ann can either send the new bitcoin to the same address \texttt{1U8yx} that she used before, or can ask Bob to generate a new address.
+In the first case, the address \texttt{1U8yx} is being re-used and in the second, address re-use is avoided.
 
 %The stations deterministically choose their transmission slots after successful transmissions.
 %If the transmission is not successful, the station randomly chooses its next transmission slot.
