@@ -666,9 +666,27 @@ This makes it possible to track and verify which outputs are available for spend
 
 The fact that all the transactions are public has some serious privacy implications.
 The original bitcoin paper \cite{nakamoto2008bpp} points out that the security relies on keeping the addresses anonymous and that a new key pair should be used for each transaction.
-In other words, that address re-use should be avoided.
+In other words, that address reuse should be avoided.
 
-\section{Privacy Leakage}
+\section{Address Reuse}
+
+Address reuse is defined as the reception of more than one transaction in the same address.
+It is possible to receive any number of transactions to the same address, and some users choose to do so.
+A possible reason is the unawareness of the users of the privacy implications of address reuse.
+In principle, creating a single address seems more convenient than generating a new one for every transaction.
+This use is similar to that of a traditional bank account number.
+The user needs to know a single address and single private key.
+If all the payments are received to that address, the user can quickly check the balance of such address to know the amount of bitcoins that are available to her.
+
+The downside is that that information is available to everyone.
+If Alice, Bob and Chris use always the same address, they are leaking private information to each other.
+As soon as Bob gives his address to Alive to receive a payment, Alice can know how many bitcoins Bob owns.
+When Alice sends the payment to Bob, he learns her address and can also check how many bitcoins she owns.
+If Alice sends a payment to Bob and a payment do Chris, and Bob sends a payment to Chris, the three parties know all the information about all the transactions, including those transactions in which they have not participated.
+As Alice knows both Bob's and Chris' addresses, she can see examining the Blockchain that Bob send a payment to Chris.
+Similarly, Bob knows that Chris received a payment from Alice and Chris knows that Bob received a payment from Alice.
+
+\section{The Wikileaks Privacy Leakage}
 
 
 
