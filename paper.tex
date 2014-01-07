@@ -547,7 +547,7 @@ This paper has been submitted to an IEEE journal.
 \begin{abstract}
 Bitcoin is a peer-to-peer electronic cash system that maintains a public ledger with all transactions.
 The public availability of this information has implications for the privacy of the users.
-The public ledger consists of transactions that transfer funds from a set of input addresses to a set of output addresses.
+The public ledger consists of transactions that transfer funds from a set of inputs to a set of output addresses.
 As long as those addresses cannot be linked to their owners, privacy is preserved.
 The linking of addresses to owners results in privacy leaks.
 The possibilities of linking addresses to owners are multiplied when addresses are used to receive funds more than once.
@@ -686,8 +686,19 @@ If Alice sends a payment to Bob and a payment do Chris, and Bob sends a payment 
 As Alice knows both Bob's and Chris' addresses, she can see examining the Blockchain that Bob send a payment to Chris.
 Similarly, Bob knows that Chris received a payment from Alice and Chris knows that Bob received a payment from Alice.
 
-\section{The Wikileaks Privacy Leakage}
+\section{Wikileaks Privacy Leakage}
 
+Wikileaks funding campaign is an example of address re-use.
+At the time of this writing, Wikileak's donation webpage offers by default a re-used address.
+It also offers the donors the possibility of generating a new (one-time) address by simply clicking a button.
+The public address makes it for everyone to inspect all the details of the transactions involving that address.
+A Blockchain explorer website (such as \texttt{blockchain.info}) can be used to browse all those details.
+At the time of this writing, Wikileak's public address has received over 3,854 bitcoins in 2216 transactions.
+The source addresses for each transaction are also public.
+
+If Alice re-uses her address and sends a donation to Wikileaks and also sends some money to Bob, Bob can know that Alice sent money to Wikileaks as Alice address appears in both a donation to Wikileaks and in the transaction to Bob.
+Address re-use makes it relatively easy to find out the balances and activities of the Bitcoin network participants.
+Therefore, address re-use is discouraged in the original Bitcoin paper \cite{nakamoto2008bpp}.
 
 
 
