@@ -700,18 +700,44 @@ If Alice re-uses her address and sends a donation to Wikileaks and also sends so
 Address re-use makes it relatively easy to find out the balances and activities of the Bitcoin network participants.
 Therefore, address re-use is discouraged in the original Bitcoin paper \cite{nakamoto2008bpp}.
 
+\section{Evidence of Address Re-use in the Blockchain}
 
+We use Obelisk and Libbitcoin to download and query the blockchain.
+We count how many times each address appears as the output of a transaction.
 
-However, keeping the addresses completely anonymous is not always possible.
-In the simplest example in which Bob wants to receive a payment from Alice, he has to generate an address and hand it to Alice.
-At that point, Alice knows that that particular address, in our previous example \texttt{1U8yx} belongs to Bob.
-Then Alice can monitor the Blockchain for transactions involving
+\begin{table}[!t]
+% increase table row spacing, adjust to taste
+\renewcommand{\arraystretch}{1.3}
+% if using array.sty, it might be a good idea to tweak the value of
+% \extrarowheight as needed to properly center the text within the cells
+\caption{Address re-use Statistics}
+\label{table_example}
+\centering
+%% Some packages, such as MDW tools, offer better commands for making tables
+%% than the plain LaTeX2e tabular which is used here.
+\begin{tabular}{|cc|}
+\hline
+Mean & 3.18\\
+Min & 1\\
+25th perc. & 1 \\
+50th perc. & 1 \\
+75th perc. & 1 \\
+Max & 1,238,931\\
+Number of addresses & 12,963,199 \\
+Number of uses & 41,244,997 \\
+Addresses used once & 10,476,899 \\
+Addressed used twice & 1,397,373\\
+Used over 100 times & 25,004 \\
+\hline
+\end{tabular}
+\end{table}
 
-
-
-Imagine that Ann wants to send another bitcoin to Bob.
-Ann can either send the new bitcoin to the same address \texttt{1U8yx} that she used before, or can ask Bob to generate a new address.
-In the first case, the address \texttt{1U8yx} is being re-used and in the second, address re-use is avoided.
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{figures/address-reuse.eps}
+\caption{Number of addresses for re-use factor from 1 to 100. Note the log scale.}
+\label{fig:address-reuse}
+\end{figure}
 
 %The stations deterministically choose their transmission slots after successful transmissions.
 %If the transmission is not successful, the station randomly chooses its next transmission slot.
