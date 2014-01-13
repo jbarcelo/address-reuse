@@ -676,7 +676,31 @@ This small difference is called a \emph{fee} and it is kept by the peers that co
 
 The temptation exists of using Bitcoin addresses just like regular bank accounts numbers.
 As addresses are used to receive payments, technically speaking only once is needed.
-We can 
+We can use the same address to receive all our payments, just like we can use a single bank account to receive all our payments.
+Obviously, in this case, we will also use the same address for all the payments which is in agreement with the bank account parallelism. 
+
+The difference is that our bank account transactions and balance are kept private by our bank.
+In contrast, all the transactions and balances in Bitcoin are publicly available to anyone with internet access.
+We could retain our privacy if we were able to keep our Bitcoin.
+However, each time that we make a transaction, the other transacting party learns our address and therefore all our transaction history.
+
+Address reuse is discouraged in the original Bitcoin paper \cite{nakamoto2008bpp}.
+
+\subsection{Address Reuse in the Blockchain}
+
+Even though address reuse might have worrying consequences, the fact is that we can find address reuse in the public record of all Bitcon transactions.
+All transactions are securely stored in the Blockchain.
+We use Obelisk and Libbitcoin to download and query the Blockchain for evidence of address reuse.
+Both Obeliks and Libbitcoin are open source projects under heavy development. 
+Our source code to generate the data and the plots presented in the paper is also available in github\footnote{http://github.com}.
+We sweep all the transactions in the Bitcoin history and for every address we count how many times it appears as an output of a transaction.
+
+Some statistics of the distribution are presented in Table~\ref{tab:address-reuse}.
+A histogram of the data is presented in Fig.~\ref{fig:address-reuse}.
+For readability reasons, we can only show the first 100 positions of the histogram.
+The distribution has a long tail and some addresses are used over one million times.
+
+
 
 
 In most of the cases, outputs are linked to public key in an indirect way.
