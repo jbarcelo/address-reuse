@@ -617,6 +617,73 @@ And the traditional banking system keeps the transactions of their customers pri
 Therefore, the privacy that Bitcoin offers to its users is a matter study.
 Ideally, any new payment system should offer privacy guarantees at least as good as traditional systems.
 
+Bitcoin are sent to Bitcoin addresses, and both the Bitcoin community and previous research studies agree that address reuse is in general a bad practice.
+It is recommended to generate a new address for each payment to be received.
+This addresses that are used only ones are called disposable addresses.
+
+In this paper we first review the basic elements of the Bitcoin system necessary for the subsequent discussion.
+Then we discuss the necessity of avoiding address re-use to prevent unnecessary privacy leakage.
+After that, we analyze the Blockchain to determine to which extend address reuse occurs in the Bitcoin community.
+Disposable addresses do not offer total protection against privacy leakage and we detail the remaining risks as well as possible solutions.
+Finally, we conclude.
+
+\section{Address Reuse}
+
+\subsection{Basic Bitcoin Elements}
+
+Bitcoin is a protocol, a network, and an Internet currency unit.
+We capitalize the word when we refer to either the protocol or the network.
+
+Transactions are a fundamental element of Bicoin.
+Payments require transactions, and these transactions are shared with the network and securely stored in the Blockchain.
+Each transaction consumes some inputs and creates some outputs.
+The inputs and outputs are worth bitcoins, and for a regular transaction to be valid the total value of the outputs must not exceed the total amount of the inputs.
+
+The outputs of one transaction can be used as inputs of other transactions.
+Critically, each output can be used only once.
+The words consumed or spent are common synonyms of used in this context.
+The idea is that each output can be spent only once just as we can spend our money only once.
+The network does not accept transactions that try to spend outputs that have been spent before.
+
+Another important element of Bitcoin are public/private asymmetric cryptographical keys.
+The public key is hashed and coded with some redundancy into base58 addresses.
+These addresses are alphanumeric chains that can be used to receive funds.
+The outputs of a transaction can be send to an address, which is simply a convenient representation of a public key.
+
+In order to spend an output, it is then necessary to offer proof of ownership of the address and, consequently, of the output.
+This proof is the evidence of knowledge of the private key corresponding to the address.
+A user willing to spend an output sent to a given address must provide the public address that hashes to the address and a valid signature.
+The signature can be generated only by the owner of the private key.
+
+There is no limit in Bitcoin regarding the number of outputs that can be send to a Bitcoin address.
+The owner of the private key will be able to spend all of those outputs once.
+Another particularity of bitcoin is that there is no practical limit of the number of addresses that can be generated.
+There are $2^{160}$ possible addresses because they are generated using RIPE-MD160.
+This makes it possible for users to generate new (disposable) addresses for each incoming payment.
+
+A particular form of outputs which is relevant to the discussion later in this work are \emph{change} outputs.
+A user willing to send a Bitcoin payment needs to combine in a transaction a number of inputs of value equal or larger than the desired payment.
+If the value of the inputs is larger than the output, it is likely that the sending part does not want to loose the difference, also called change.
+In order to keep the change, the payer creates a transaction with inputs exceeding the payment value and two outputs: the actual payment and the change.
+The payment is sent to the payee and the change is sent to an address controlled by the payer.
+
+It is a common and recommended practice that the amount of the inputs is slightly higher than the value of the outputs.
+This small difference is called a \emph{fee} and it is kept by the peers that contributed to the security of the network.
+
+
+
+\subsection{The Temptation}
+
+The temptation exists of using Bitcoin addresses just like regular bank accounts numbers.
+As addresses are used to receive payments, technically speaking only once is needed.
+We can 
+
+
+In most of the cases, outputs are linked to public key in an indirect way.
+The outputs are destined to a particular address which is derived from a hash of a private key.
+Only the owner of the associated private key is allowed to spend the output, after providing both the public key that hashes to the  and a
+
+
 The public availability of this information has implications for the privacy of the users.
 The public ledger consists of transactions that transfer funds from a set of input addresses to a set of output addresses.
 As long as those addresses cannot be linked to their owners, privacy is preserved.
