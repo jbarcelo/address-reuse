@@ -608,6 +608,15 @@ Bitcoin, cryptocurrency, privacy, address reuse
 % (should never be an issue)
 
 \IEEEPARstart{B}{itcoin} is a peer-to-peer electronic cash system \cite{nakamoto2008bpp} that maintains a public ledger with all transactions.
+All the transactions need to be available to the peer-to-peer network that guarantees the security of the system.
+Any full node of the network stores in a database all the transactions in the history of Bitcoin.
+This database is typically referred to as the \emph{Blockchain}.
+
+With traditional cash, there is no public record of all the transactions.
+And the traditional banking system keeps the transactions of their customers private.
+Therefore, the privacy that Bitcoin offers to its users is a matter study.
+Ideally, any new payment system should offer privacy guarantees at least as good as traditional systems.
+
 The public availability of this information has implications for the privacy of the users.
 The public ledger consists of transactions that transfer funds from a set of input addresses to a set of output addresses.
 As long as those addresses cannot be linked to their owners, privacy is preserved.
@@ -704,14 +713,17 @@ Therefore, address re-use is discouraged in the original Bitcoin paper \cite{nak
 
 We use Obelisk and Libbitcoin to download and query the blockchain.
 We count how many times each address appears as the output of a transaction.
+Table~\ref{tab:address-reuse} shows some relevant statistics and Fig.~\ref{fig:address-reuse} presents an histogram showing addresses used hundred or less times.
+Most of the addresses are used a single time, and a few address are used a large number of times.
+
 
 \begin{table}[!t]
 % increase table row spacing, adjust to taste
 \renewcommand{\arraystretch}{1.3}
 % if using array.sty, it might be a good idea to tweak the value of
 % \extrarowheight as needed to properly center the text within the cells
-\caption{Address re-use Statistics}
-\label{table_example}
+\caption{Address Re-use Statistics}
+\label{tab:address-reuse}
 \centering
 %% Some packages, such as MDW tools, offer better commands for making tables
 %% than the plain LaTeX2e tabular which is used here.
@@ -738,6 +750,50 @@ Used over 100 times & 25,004 \\
 \caption{Number of addresses for re-use factor from 1 to 100. Note the log scale.}
 \label{fig:address-reuse}
 \end{figure}
+
+\section{Avoiding address re-use is not enough}
+
+Even if addresses are used in a single occasion to receive bitcoins, it might be still possible to link different addresses to the same user.
+The reason is that in most of the occasions a user does not have an output that is exactly the input that she needs.
+If a user wants to spend 1 bitcoin and has two 0.5 bitcoin outputs that she can spend, she has to combine both of those outputs as inputs of the same transaction that spends, in total, one bitcoin.
+A privacy attacker can infer that if the two inputs have been spent on the same transaction, they are likely to belong to the same user.
+
+Another possibility of linking addresses is by means of \emph{change addresses}.A user might not find a combination of outputs that amounts exactly to the amount that she wants to spend in the transaction.
+The solution is to create a transaction with two outputs. 
+One of them is the actual payment while the other is sent to an address owned by the user that emits the payment.
+This later address is a change address.
+In \cite{meiklejohn2013fbc} some heuristics are provided to identify change addresses and use them to link addresses belonging to the same user.
+The process is involved and several refinements are detailed  in \cite{meiklejohn2013fbc} to avoid false positives.
+False negatives are still possible.
+
+\section{Next Generation Privacy Enhancing Practices}
+
+The privacy attacks described on the next section rely on the fact that all the inputs of the transaction belong to the same user.
+Even though this is the current usual practice, it is by no means a restriction of bitcoin.
+It is possible to create transactions with multiple inputs belonging to different users.
+The technique of of creating join transactions among multiple users is called CoinJoin.
+
+Bitcoins allows the construction of a transaction with an agreed set of outputs that is valid only when all the signatures needed for the inputs are provided.
+Critically, the process requires that outputs are not changed.
+Two or more users willing to create a join transaction must first agree on the payment addresses and amounts.
+Then, each user provides the needed inputs (without signatures) and change addresses.
+Finally, when the transaction is ready and only the signatures are missing, the users proceed to sign the transaction.
+The user that has to provide the first signature has no incentive to cheat, as any change in the agreed transaction will be detected by the other participating users that will refuse to sign.
+After the first user has signed, any change in the transaction will invalidate the first signature and therefore the whole transaction.
+Therefore, trust is not needed by different users to create the transaction.
+
+As there is uncertainty regarding the ownership of each of the inputs of the transaction, the amount of privacy leaked in CoinJoin transactions is greatly reduced.
+
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{figures/coinjoin.eps}
+\caption{CoinJoin transaction of four users, five inputs, four payment outputs and four change outputs}
+\label{fig:address-reuse}
+\end{figure}
+
+When a user is payed with a CoinJoin transaction, that user knows that one or more of the inputs belong to the payer, and likely one or more of the outputs belong to the payer.
+However, the information of which are exactly the addresses belonging to the payer is not available.
 
 %The stations deterministically choose their transmission slots after successful transmissions.
 %If the transmission is not successful, the station randomly chooses its next transmission slot.
