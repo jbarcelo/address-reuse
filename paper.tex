@@ -703,110 +703,21 @@ The distribution has a long tail and some addresses are used over one million ti
 
 
 
-In most of the cases, outputs are linked to public key in an indirect way.
-The outputs are destined to a particular address which is derived from a hash of a private key.
-Only the owner of the associated private key is allowed to spend the output, after providing both the public key that hashes to the  and a
-
-
-The public availability of this information has implications for the privacy of the users.
-The public ledger consists of transactions that transfer funds from a set of input addresses to a set of output addresses.
-As long as those addresses cannot be linked to their owners, privacy is preserved.
-The linking of addresses to owners results in privacy leaks.
-The possibilities of linking addresses to owners are multiplied when addresses are used to receive funds more than once.
-In this work we privacy-leaking effects of address reuse and gather statistics of address reuse in the Bitcoin network.
-
-In the following sections we offer an overview of the Bitcoin elements that are closely related to our discussion.
-Many details and advanced features will be skipped to keep the discussion simple and focused.
-
-\section{A Bitcoin Transaction}
-A Bitcoin transaction transfers funds from one or more inputs to one or more outputs.
-Inputs and outputs are linked to addresses, and normally those addresses are associated to a public key.
-The owner of the private key owns the funds that are stored in the address.
-The owner of the address can take a transaction that outputs funds to her address and use it as an input for another transaction that transfer those funds to some other address.
-This newly created transaction must be signed with the private key of the input address (or addresses) in order to be accepted for the network.
-
-The addresses that are linked to a single private key are alphanumeric (Base58) chains starting by 1 and around 30 characters long.
-For convenience, in our examples we will use shorter addresses such as \texttt{1HB5X}.
-Imagine that Bob and Chris generate a pair of private and public bitcoin keys each.
-They derive their addresses from their public keys and obtain \texttt{1U8yx} and \texttt{1Y36v} respectively.
-
-Ann sends one bitcoin to Bob's address \texttt{1U8yx}.
-Bob wants to transfer that bitcoin to Chris' address \texttt{1Y36v}.
-As Bob has the private key associated to the address \texttt{1U8yx}, he can create a transaction that has as an input Ann's transaction and outputs the funds to \texttt{1Y36v}.
-Bob can provide a valid signature for address \texttt{1Bob} and broadcast the transaction to the Bitcoin peer-to-peer network.
-This simple example is illustrated in Fig.~\ref{fig:simple-transaction}.
-
-\begin{figure}[!t]
-\centering
-\includegraphics[width=\linewidth]{figures/simple-transaction}
-\caption{The transaction on the left has been prepared by Ann to send funds to Bob. Bob uses the output of the left transaction to create a new transaction that sends the funds to Chris.}
-\label{fig:simple-transaction}
-\end{figure}
-
-\section{Transactions with Multiple Inputs and Multiple Outputs}
-
-The transaction presented in the previous section is the simplest in the sense that it has a single input and a single output.
-It is often the case that Bitcoin transactions have multiple inputs and multiple outputs.
-For example, if Bob wants to split the bitcoin that he has received from Alice in two parts, half for Chris and half for Dave, he can construct a transaction with two outputs of 0,5 bitcoins.
-Similarly, if Bob receives two separate transactions of 0,5 bitcoins each, he can use those two outputs as inputs of a single transaction to send one bitcoin to Chris.
-
-A recurrent situation in the Bitcoin network is that Bob has received a one bitcoin transaction and wants to send only half a bitcoin to Chris.
-Bob can prepare a transaction in which he takes the one bitcoin transaction as an input, and splits it in two different outputs: one for Chris and one for himself.
-The second output is usually referred to as \emph{the change} and it remains available for Bob to spend at a later time.
-
-\section{Blockchain: The Public Ledger}
-
-Every valid transaction is stored in a public ledger which is normally refferred to as the \emph{ Blockchain}.
-When Ann sends a bitcoin to the address \texttt{1U8yx}, her transaction is included in the Blockchain.
-Everyone in the peer-to-peer network knows that there is one output worth one bitcoin that is available for whoever has the private key associated to the \texttt{1U8yx} address.
-When Bob creates a new transaction spending that output and it is accepted by the network and included in the Blockchain, the network knows that the one bitcoin output for \texttt{1U8yx} has been used and therefore it cannot be used again.
-
-To prevent that an output can be spent twice it is necessary that all the Bitcoin network participants are aware of all existing transactions.
-This makes it possible to track and verify which outputs are available for spending and therefore the amount of bitcoins available in each of the existing addresses.
-
-The fact that all the transactions are public has some serious privacy implications.
-The original bitcoin paper \cite{nakamoto2008bpp} points out that the security relies on keeping the addresses anonymous and that a new key pair should be used for each transaction.
-In other words, that address reuse should be avoided.
-
-\section{Address Reuse}
-
-Address reuse is defined as the reception of more than one transaction in the same address.
-It is possible to receive any number of transactions to the same address, and some users choose to do so.
-A possible reason is the unawareness of the users of the privacy implications of address reuse.
-In principle, creating a single address seems more convenient than generating a new one for every transaction.
-This use is similar to that of a traditional bank account number.
-The user needs to know a single address and single private key.
-If all the payments are received to that address, the user can quickly check the balance of such address to know the amount of bitcoins that are available to her.
-
-The downside is that that information is available to everyone.
-If Alice, Bob and Chris use always the same address, they are leaking private information to each other.
-As soon as Bob gives his address to Alive to receive a payment, Alice can know how many bitcoins Bob owns.
-When Alice sends the payment to Bob, he learns her address and can also check how many bitcoins she owns.
-If Alice sends a payment to Bob and a payment do Chris, and Bob sends a payment to Chris, the three parties know all the information about all the transactions, including those transactions in which they have not participated.
-As Alice knows both Bob's and Chris' addresses, she can see examining the Blockchain that Bob send a payment to Chris.
-Similarly, Bob knows that Chris received a payment from Alice and Chris knows that Bob received a payment from Alice.
-
-\section{Wikileaks Privacy Leakage}
+\subsection{Wikileaks Privacy Leakage}
 
 Wikileaks funding campaign is an example of address re-use.
 At the time of this writing, Wikileak's donation webpage offers by default a re-used address.
 It also offers the donors the possibility of generating a new (one-time) address by simply clicking a button.
-The public address makes it for everyone to inspect all the details of the transactions involving that address.
+The public address makes it possible for everyone to inspect all the details of the transactions involving that address.
 A Blockchain explorer website (such as \texttt{blockchain.info}) can be used to browse all those details.
 At the time of this writing, Wikileak's public address has received over 3,854 bitcoins in 2216 transactions.
 The source addresses for each transaction are also public.
 
-If Alice re-uses her address and sends a donation to Wikileaks and also sends some money to Bob, Bob can know that Alice sent money to Wikileaks as Alice address appears in both a donation to Wikileaks and in the transaction to Bob.
-Address re-use makes it relatively easy to find out the balances and activities of the Bitcoin network participants.
-Therefore, address re-use is discouraged in the original Bitcoin paper \cite{nakamoto2008bpp}.
+Wikileaks address reuse can unintendedly leak donor's privacy unless they are very cautious.
+Any payer can check if the output of the payment is later spend in a transaction to Wikileaks.
+If this is the case, the payer know that the payee is also a Wikileaks donor.
 
-\section{Evidence of Address Re-use in the Blockchain}
-
-We use Obelisk and Libbitcoin to download and query the blockchain.
-We count how many times each address appears as the output of a transaction.
-Table~\ref{tab:address-reuse} shows some relevant statistics and Fig.~\ref{fig:address-reuse} presents an histogram showing addresses used hundred or less times.
-Most of the addresses are used a single time, and a few address are used a large number of times.
-
+There are more sophisticated techniques that we review later in this paper that can result in increased privacy leakage taking advantage of the widespread use of Bitcoin \emph{wallets} and \emph{change addresses}.
 
 \begin{table}[!t]
 % increase table row spacing, adjust to taste
@@ -841,6 +752,28 @@ Used over 100 times & 25,004 \\
 \caption{Number of addresses for re-use factor from 1 to 100. Note the log scale.}
 \label{fig:address-reuse}
 \end{figure}
+
+\subsection{Bitcoin Wallets}
+
+From the previous section it should be clear that address reuse has negative consequences to the user's privacy.
+A partial solution to Bitcoin's privacy weaknesses is the use of disposable addresses.
+Disposable addresses are used only once and therefore make it more difficult to link different transactions to the same user.
+
+The reference Bitcoin peer implementation, \emph{bitcoind} and many other software packages make it possible for th Bitcoin user to comfortably handle a large number of addresses.
+The software that takes care of Bitcoin addresses is called a Bitcoin wallet.
+This software generates as many addresses as needed.
+Some of these addresses are used for receiving payments while others are used to receive change outputs.
+The software does not reuse change addresses and therefore, if the user is cautious enough to avoid address reuse for payment reception, addresses are used a single time to receive funds.
+
+The software wallet also adds the funds available in all the addresses to present a total balance to the user.
+At the time of creating the transaction, the wallet assists the user choosing among outputs available to the user those that are suitable for a given payment.
+Change addresses are also handled transparently for the user.
+
+The software keeps all the private keys of the user, and typically keeps them encrypted with a single password that the user needs to remember.
+
+\subsection{Wallet Privacy Leakage}
+
+Typical operation of Bitcoin wallets potentially leaks information about its users that has been exploited in the past.
 
 \section{Avoiding address re-use is not enough}
 
