@@ -691,7 +691,7 @@ Address reuse is discouraged in the original Bitcoin paper \cite{nakamoto2008bpp
 Even though address reuse might have worrying consequences, the fact is that we can find address reuse in the public record of all Bitcon transactions.
 All transactions are securely stored in the Blockchain.
 We use Obelisk and Libbitcoin to download and query the Blockchain for evidence of address reuse.
-Both Obeliks and Libbitcoin are open source projects under heavy development. 
+Both Obelisk and Libbitcoin are open source projects under heavy development. 
 Our source code to generate the data and the plots presented in the paper is also available in github\footnote{http://github.com}.
 We sweep all the transactions in the Bitcoin history and for every address we count how many times it appears as an output of a transaction.
 
@@ -773,51 +773,33 @@ The software keeps all the private keys of the user, and typically keeps them en
 
 \subsection{Wallet Privacy Leakage}
 
-Typical operation of Bitcoin wallets potentially leaks information about its users that has been exploited in the past.
+Typical operation of Bitcoin wallets potentially leaks information about its users that has been exploited in the past~\cite{meiklejohn2013fbc}.
+The first form of privacy leakage is when a wallet combines different outputs as inputs for a single transaction.
+If none of the available outputs to the wallet is worth enough for a given payment, the wallet will try to find a combination of available outputs that add to the required amount.
+When the transaction is broadcast, an attacker can infer that all the inputs of the transaction and their associated addresses belong to the same user.
 
-\section{Avoiding address re-use is not enough}
+It is important to highlight at this point that the Bitcoin protocol does not require that all the inputs belong to the same wallet.
+This is simply a common practice in widespread software wallets.
+Therefore is not a protocol vulnerability, but an implementation vulnerability.
 
-Even if addresses are used in a single occasion to receive bitcoins, it might be still possible to link different addresses to the same user.
-The reason is that in most of the occasions a user does not have an output that is exactly the input that she needs.
-If a user wants to spend 1 bitcoin and has two 0.5 bitcoin outputs that she can spend, she has to combine both of those outputs as inputs of the same transaction that spends, in total, one bitcoin.
-A privacy attacker can infer that if the two inputs have been spent on the same transaction, they are likely to belong to the same user.
+A second possible attack involves change addresses.
+There are techniques to try to infer which of the outputs of a particular transaction is a change output.
+For example, in a transaction which presents two outputs and one of them is smaller than all of the inputs, it can be assumed that the small output is a change output.
+Again, this is simply an assumption that relies on the way that popular wallets operate today and by no means is an inherent restriction of the protocol.
+If a change output is identified and later used in another transaction, an attacker may infer that all the inputs of both transactions belong to the same wallet.
 
-Another possibility of linking addresses is by means of \emph{change addresses}.A user might not find a combination of outputs that amounts exactly to the amount that she wants to spend in the transaction.
-The solution is to create a transaction with two outputs. 
-One of them is the actual payment while the other is sent to an address owned by the user that emits the payment.
-This later address is a change address.
-In \cite{meiklejohn2013fbc} some heuristics are provided to identify change addresses and use them to link addresses belonging to the same user.
-The process is involved and several refinements are detailed  in \cite{meiklejohn2013fbc} to avoid false positives.
-False negatives are still possible.
+As most of the transactions have a change output and this output can be an input of another transaction, a number of transactions can be chained together in a privacy leaking chain.
 
-\section{Next Generation Privacy Enhancing Practices}
+Privacy invading techniques in the literature rely on heuristics that take advantage of \emph{idioms of use}.
+It is noted in~\cite{meiklejohn2013fbc} that a change of current Bitcoin practices may invalidate current privacy attacks methods.
 
-The privacy attacks described on the next section rely on the fact that all the inputs of the transaction belong to the same user.
-Even though this is the current usual practice, it is by no means a restriction of bitcoin.
-It is possible to create transactions with multiple inputs belonging to different users.
-The technique of of creating join transactions among multiple users is called CoinJoin.
+To the best of the authors knowledge, techniques currently available in the literature cluster addresses belonging to the same wallet but do not attempt to link different wallets of the same user.
+Therefore, the use of different wallets may offer partial protection against published privacy attacks.
 
-Bitcoins allows the construction of a transaction with an agreed set of outputs that is valid only when all the signatures needed for the inputs are provided.
-Critically, the process requires that outputs are not changed.
-Two or more users willing to create a join transaction must first agree on the payment addresses and amounts.
-Then, each user provides the needed inputs (without signatures) and change addresses.
-Finally, when the transaction is ready and only the signatures are missing, the users proceed to sign the transaction.
-The user that has to provide the first signature has no incentive to cheat, as any change in the agreed transaction will be detected by the other participating users that will refuse to sign.
-After the first user has signed, any change in the transaction will invalidate the first signature and therefore the whole transaction.
-Therefore, trust is not needed by different users to create the transaction.
+\subsection{Enhanced Privacy Measures}
 
-As there is uncertainty regarding the ownership of each of the inputs of the transaction, the amount of privacy leaked in CoinJoin transactions is greatly reduced.
-
-
-\begin{figure}[!t]
-\centering
-\includegraphics[width=\linewidth]{figures/coinjoin.eps}
-\caption{CoinJoin transaction of four users, five inputs, four payment outputs and four change outputs}
-\label{fig:address-reuse}
-\end{figure}
-
-When a user is payed with a CoinJoin transaction, that user knows that one or more of the inputs belong to the payer, and likely one or more of the outputs belong to the payer.
-However, the information of which are exactly the addresses belonging to the payer is not available.
+The privacy attacks described in the previous subsection take advantage of the current behaviour of software wallets that create transactions in which all of the inputs belong to the same user.
+Advanced wallets that create transactions with inputs of different users no longer satisfy the assumption that all inputs belong to the same wallet and therefore provides an extra layer of privacy protection to Bitcoin users.
 
 %The stations deterministically choose their transmission slots after successful transmissions.
 %If the transmission is not successful, the station randomly chooses its next transmission slot.
