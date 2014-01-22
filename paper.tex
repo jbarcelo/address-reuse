@@ -468,7 +468,7 @@ height \snellskip\kern-.5em&\multispan#2\hrulefill\cr}
 %
 % paper title
 % can use linebreaks \\ within to get better formatting as desired
-\title{Address Reuse in the Bitcoin Network}
+\title{User Privacy in the Public Bitcoin Blockchain}
 %
 %
 % author names and IEEE memberships
@@ -551,7 +551,10 @@ The public ledger consists of transactions that transfer funds from a set of inp
 As long as those addresses cannot be linked to their owners, privacy is preserved.
 The linking of addresses to owners results in privacy leaks.
 The possibilities of linking addresses to owners are multiplied when addresses are used to receive funds more than once.
-In this work we privacy-leaking effects of address reuse and gather statistics of address reuse in the Bitcoin network.
+In this work we describe privacy-leaking effects of address reuse and gather statistics of address reuse in the Bitcoin network.
+
+We also introduce collaborative (CoinJoin) transactions that prevent the privacy attacks that have been published in the literature.
+Then we analyze the Blockchain to find transactions that could potentially be CoinJoin transactions.
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
 % This preserves the distinction between vectors and scalars. However,
@@ -562,7 +565,7 @@ In this work we privacy-leaking effects of address reuse and gather statistics o
 
 % Note that keywords are not normally used for peerreview papers.
 \begin{IEEEkeywords}
-Bitcoin, cryptocurrency, privacy, address reuse
+Bitcoin, cryptocurrency, privacy, address reuse, CoinJoin
 \end{IEEEkeywords}
 
 
@@ -614,18 +617,17 @@ This database is typically referred to as the \emph{Blockchain}.
 
 With traditional cash, there is no public record of all the transactions.
 And the traditional banking system keeps the transactions of their customers private.
-Therefore, the privacy that Bitcoin offers to its users is a matter study.
+The public availability of the \emph{Blockchain} represents a novelty and its privacy implications are worth studying.
 Ideally, any new payment system should offer privacy guarantees at least as good as traditional systems.
 
-Bitcoin are sent to Bitcoin addresses, and both the Bitcoin community and previous research studies agree that address reuse is in general a bad practice.
+Bitcoin operation involves Bitcoin addresses, and both the Bitcoin community and previous research studies agree that address reuse is in general a bad practice.
 It is recommended to generate a new address for each payment to be received.
-This addresses that are used only ones are called disposable addresses.
+These addresses that are used only ones are called disposable addresses.
 
 In this paper we first review the basic elements of the Bitcoin system necessary for the subsequent discussion.
 Then we discuss the necessity of avoiding address re-use to prevent unnecessary privacy leakage.
-After that, we analyze the Blockchain to determine to which extend address reuse occurs in the Bitcoin community.
-Disposable addresses do not offer total protection against privacy leakage and we detail the remaining risks as well as possible solutions.
-Finally, we conclude.
+After that, we analyze the Blockchain to determine to which extent address reuse occurs in the Bitcoin community.
+Disposable addresses do not offer total protection against privacy leakage and we detail the remaining risks as well and possible solutions.
 
 \section{Address Reuse}
 
@@ -641,22 +643,22 @@ The inputs and outputs are worth bitcoins, and for a regular transaction to be v
 
 The outputs of one transaction can be used as inputs of other transactions.
 Critically, each output can be used only once.
-The words consumed or spent are common synonyms of used in this context.
-The idea is that each output can be spent only once just as we can spend our money only once.
-The network does not accept transactions that try to spend outputs that have been spent before.
+In this sense, available outputs are just like available money, which can also only be spent once.
+Another name for the available outputs is available coins.
+The network does not accept transactions that try to spend coins that have been spent before.
 
 Another important element of Bitcoin are public/private asymmetric cryptographical keys.
 The public key is hashed and coded with some redundancy into base58 addresses.
 These addresses are alphanumeric chains that can be used to receive funds.
-The outputs of a transaction can be send to an address, which is simply a convenient representation of a public key.
+The outputs of a transaction can be sent to an address, which is simply a convenient representation of a public key.
 
-In order to spend an output, it is then necessary to offer proof of ownership of the address and, consequently, of the output.
+In order to spend an output, it is necessary to offer proof of ownership of the address and, consequently, of the output.
 This proof is the evidence of knowledge of the private key corresponding to the address.
-A user willing to spend an output sent to a given address must provide the public address that hashes to the address and a valid signature.
+A user willing to spend an output sent to a given address must provide the public key that hashes to that address and a valid signature.
 The signature can be generated only by the owner of the private key.
 
-There is no limit in Bitcoin regarding the number of outputs that can be send to a Bitcoin address.
-The owner of the private key will be able to spend all of those outputs once.
+There is no limit in Bitcoin regarding the number of transactions that can use a given address for the outputs.
+The owner of the address' private key will be able to spend each of those outputs once.
 Another particularity of bitcoin is that there is no practical limit of the number of addresses that can be generated.
 There are $2^{160}$ possible addresses because they are generated using RIPE-MD160.
 This makes it possible for users to generate new (disposable) addresses for each incoming payment.
@@ -677,27 +679,26 @@ This small difference is called a \emph{fee} and it is kept by the peers that co
 The temptation exists of using Bitcoin addresses just like regular bank accounts numbers.
 As addresses are used to receive payments, technically speaking only once is needed.
 We can use the same address to receive all our payments, just like we can use a single bank account to receive all our payments.
-Obviously, in this case, we will also use the same address for all the payments which is in agreement with the bank account parallelism. 
+Obviously, in this case, we will also use the same address for all the payments that we make, which is in agreement with the bank account parallelism. 
 
 The difference is that our bank account transactions and balance are kept private by our bank.
-In contrast, all the transactions and balances in Bitcoin are publicly available to anyone with internet access.
-We could retain our privacy if we were able to keep our Bitcoin.
-However, each time that we make a transaction, the other transacting party learns our address and therefore all our transaction history.
+In contrast, all the transactions and balances in Bitcoin are publicly available to anyone with Internet access.
+We could retain our privacy if we were able to keep our Bitcoin addresses private.
+Each time that we participate in a transaction, the other party may have the opportunity to link our address to our identity.
 
 Address reuse is discouraged in the original Bitcoin paper \cite{nakamoto2008bpp}.
 
 \subsection{Address Reuse in the Blockchain}
 
-Even though address reuse might have worrying consequences, the fact is that we can find address reuse in the public record of all Bitcon transactions.
-All transactions are securely stored in the Blockchain.
+Even though address reuse might have worrying consequences, the fact is that we can find address reuse in the Blockchain.
 We use Obelisk and Libbitcoin to download and query the Blockchain for evidence of address reuse.
 Both Obelisk and Libbitcoin are open source projects under heavy development. 
-Our source code to generate the data and the plots presented in the paper is also available in github\footnote{http://github.com}.
+Our source code to generate the data and the plots presented in the paper is also available in github\footnote{https://github.com/jbarcelo/txfillstat}.
 We sweep all the transactions in the Bitcoin history and for every address we count how many times it appears as an output of a transaction.
 
 Some statistics of the distribution are presented in Table~\ref{tab:address-reuse}.
 A histogram of the data is presented in Fig.~\ref{fig:address-reuse}.
-For readability reasons, we can only show the first 100 positions of the histogram.
+For readability reasons, we only show the first 100 positions of the histogram.
 The distribution has a long tail and some addresses are used over one million times.
 
 
@@ -707,17 +708,17 @@ The distribution has a long tail and some addresses are used over one million ti
 
 Wikileaks funding campaign is an example of address re-use.
 At the time of this writing, Wikileak's donation webpage offers by default a re-used address.
-It also offers the donors the possibility of generating a new (one-time) address by simply clicking a button.
+It also offers the donors the possibility of generating a new (disposable) address by simply clicking a button.
 The public address makes it possible for everyone to inspect all the details of the transactions involving that address.
 A Blockchain explorer website (such as \texttt{blockchain.info}) can be used to browse all those details.
 At the time of this writing, Wikileak's public address has received over 3,854 bitcoins in 2216 transactions.
 The source addresses for each transaction are also public.
 
-Wikileaks address reuse can unintendedly leak donor's privacy unless they are very cautious.
-Any payer can check if the output of the payment is later spend in a transaction to Wikileaks.
-If this is the case, the payer know that the payee is also a Wikileaks donor.
+Wikileaks address reuse can unintendedly leak donors' privacy unless they are very cautious.
+If the output of a transaction is later sent to Wikileaks in a second transaction, the payer of the first transaction can learn that the payee of the first transaction is a Wikileaks donor by simply inspecting the Blockchain.
 
-There are more sophisticated techniques that we review later in this paper that can result in increased privacy leakage taking advantage of the widespread use of Bitcoin \emph{wallets} and \emph{change addresses}.
+There are advanced techniques that we review later in this work that can result in increased privacy leakage.
+These techniques exploit the usual behaviour of Bitcoin \emph{wallets} and \emph{change addresses}.
 
 \begin{table}[!t]
 % increase table row spacing, adjust to taste
@@ -759,23 +760,25 @@ From the previous section it should be clear that address reuse has negative con
 A partial solution to Bitcoin's privacy weaknesses is the use of disposable addresses.
 Disposable addresses are used only once and therefore make it more difficult to link different transactions to the same user.
 
-The reference Bitcoin peer implementation, \emph{bitcoind} and many other software packages make it possible for th Bitcoin user to comfortably handle a large number of addresses.
+The reference Bitcoin peer implementation, \emph{bitcoind} and many other software packages make it possible for the Bitcoin user to comfortably handle a large number of addresses.
 The software that takes care of Bitcoin addresses is called a Bitcoin wallet.
 This software generates as many addresses as needed.
 Some of these addresses are used for receiving payments while others are used to receive change outputs.
 The software does not reuse change addresses and therefore, if the user is cautious enough to avoid address reuse for payment reception, addresses are used a single time to receive funds.
 
-The software wallet also adds the funds available in all the addresses to present a total balance to the user.
-At the time of creating the transaction, the wallet assists the user choosing among outputs available to the user those that are suitable for a given payment.
+The software wallet also computes the sum of the funds available in all the addresses to present a total balance to the user.
+The wallets also assists the users in the creation of transactions.
+Among all the outputs available to the user, the wallet picks those that are used as inputs of the new transaction.
 Change addresses are also handled transparently for the user.
 
 The software keeps all the private keys of the user, and typically keeps them encrypted with a single password that the user needs to remember.
 
 \subsection{Wallet Privacy Leakage}
 
-Typical operation of Bitcoin wallets potentially leaks information about its users that has been exploited in the past~\cite{meiklejohn2013fbc}.
+Typical operation of Bitcoin wallets potentially leaks some information about its users.
+This leakage has been exploited in the past~\cite{meiklejohn2013fbc}.
 The first form of privacy leakage is when a wallet combines different outputs as inputs for a single transaction.
-If none of the available outputs to the wallet is worth enough for a given payment, the wallet will try to find a combination of available outputs that add to the required amount.
+This combination is necessary when the software creates a transaction for a payment value that exceeds that of the individual available coins.
 When the transaction is broadcast, an attacker can infer that all the inputs of the transaction and their associated addresses belong to the same user.
 
 It is important to highlight at this point that the Bitcoin protocol does not require that all the inputs belong to the same wallet.
@@ -786,12 +789,12 @@ A second possible attack involves change addresses.
 There are techniques to try to infer which of the outputs of a particular transaction is a change output.
 For example, in a transaction which presents two outputs and one of them is smaller than all of the inputs, it can be assumed that the small output is a change output.
 Again, this is simply an assumption that relies on the way that popular wallets operate today and by no means is an inherent restriction of the protocol.
-If a change output is identified and later used in another transaction, an attacker may infer that all the inputs of both transactions belong to the same wallet.
+If a change output of a transaction is identified and later used as an input in another transaction, an attacker may infer that all the inputs of the first and second transaction belong to the same wallet.
 
 As most of the transactions have a change output and this output can be an input of another transaction, a number of transactions can be chained together in a privacy leaking chain.
 
 Privacy invading techniques in the literature rely on heuristics that take advantage of \emph{idioms of use}.
-It is noted in~\cite{meiklejohn2013fbc} that a change of current Bitcoin practices may invalidate current privacy attacks methods.
+It is noted in~\cite{meiklejohn2013fbc} that a change of current Bitcoin practices may invalidate current privacy attack methods.
 
 To the best of the authors knowledge, techniques currently available in the literature cluster addresses belonging to the same wallet but do not attempt to link different wallets of the same user.
 Therefore, the use of different wallets may offer partial protection against published privacy attacks.
@@ -799,7 +802,36 @@ Therefore, the use of different wallets may offer partial protection against pub
 \subsection{Enhanced Privacy Measures}
 
 The privacy attacks described in the previous subsection take advantage of the current behaviour of software wallets that create transactions in which all of the inputs belong to the same user.
-Advanced wallets that create transactions with inputs of different users no longer satisfy the assumption that all inputs belong to the same wallet and therefore provides an extra layer of privacy protection to Bitcoin users.
+The attacks can be disrupted by introducing transactions in the Blockchain that intendedly violate the assumptions on which the privacy attacks rely.
+If different users collaborate in creating a transaction and the coins that are used as inputs belong to the different users, the attacks currently available in the literature will no longer be reliable.
+These transactions create an additional layer of confusion which results in additional protection for the privacy of the users.
+
+The combination of inputs of different users has been termed \emph{CoinJoin} by the Bitcoin community.
+In the simplest case, two users combine two inputs to make two payments in a single transaction.
+A simple CoinJoin transactions has two or more inputs from two different users, two outputs which are the two payments, and two change addresses for the two payers.
+If the inputs are of similar size, a payee cannot determine which inputs belong to the payer.
+Similarly, a Blockchain observer cannot link different inputs as belonging to the same user.
+
+There is no limit in the number of users that can combine their payments in a single Bitcoin transaction.
+In fact, a larger number of collaborators makes it even more difficult for the attacker to extract information from the Blockchain.
+The only limitation is that to participate in a CoinJoin transaction, it is necessary to find other users that want to make a payment at the same time.
+At the time of this writing, mainstream wallets do not offer automated tools for finding collaborators for a CoinJoin transactions and therefore CoinJoin is seldomly used.
+
+Nevertheless, even if only a fraction of users actually participates in CoinJoin transactions, all Bitcoin users benefit from increased privacy.
+The existence of some CoinJoin transactions undermine the applicability of published privacy attacks and therefore more sophisticated attacks that circumvent CoinJoin transactions are needed to reliably extract information from the Blockchain.
+
+We scan the Blockchain for transactions with two or more inputs and four or more outputs as they are possible CoinJoin transactions.
+In Fig.~\ref{fig:coinjoin-candidates-matrix} we present results for a number of inputs and outputs lower than 9.
+The total number of transactions in the Blockchain that could be CoinJoin transactions is XXXX.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{figures/coinjoin-candidates-matrix.eps}
+\caption{Number of potential CoinJoin transactions for a given number of inputs and outputs.}
+\label{fig:coinjoin-candidates-matrix}
+\end{figure}
+
+
 
 %The stations deterministically choose their transmission slots after successful transmissions.
 %If the transmission is not successful, the station randomly chooses its next transmission slot.
