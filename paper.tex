@@ -447,7 +447,33 @@ height \snellskip\kern-.5em&\multispan#2\hrulefill\cr}
 
 \usepackage{psfrag}
 
+%\usepackage{bera}% optional: just to have a nice mono-spaced font
+\usepackage{listings}
+\usepackage{xcolor}
 
+\colorlet{punct}{red!60!black}
+\definecolor{background}{HTML}{EEEEEE}
+\definecolor{delim}{RGB}{20,105,176}
+\colorlet{numb}{magenta!60!black}
+
+\lstdefinelanguage{json}{
+    basicstyle=\ttfamily\small,
+    %numbers=left,
+    %numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    %frame=lines,
+    %backgroundcolor=\color{background},
+    literate=
+     *{:}{{{\color{punct}{:}}}}{1}
+      {,}{{{\color{punct}{,}}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1},
+}
 
 % *** Do not adjust lengths that control margins, column widths, etc. ***
 % *** Do not use packages that alter fonts (such as pslatex).         ***
@@ -485,10 +511,10 @@ height \snellskip\kern-.5em&\multispan#2\hrulefill\cr}
         Name~Surname, \IEEEmembership{Member, IEEE,}
         Name~Surname, %~\IEEEmembership{Fellow,~OSA,}
         and~Name~Surname,~\IEEEmembership{Senior~Member,~IEEE}% <-this % stops a space
-\thanks{The authors are with Universitat Pompeu Fabra.
-Roc Boronat 138, 08018 Barcelona, Catalunya, Spain.
-E-mail: jaume.barcelo@upf.edu
-This paper has been submitted to an IEEE journal.
+\thanks{The authors %are with Universitat Pompeu Fabra.
+%Roc Boronat 138, 08018 Barcelona, Catalunya, Spain.
+%E-mail: jaume.barcelo@upf.edu
+%This paper has been submitted to an IEEE journal.
 }
 }
 
@@ -553,7 +579,7 @@ The linking of addresses to owners results in privacy leaks.
 The possibilities of linking addresses to owners are multiplied when addresses are used to receive funds more than once.
 In this work we describe privacy-leaking effects of address reuse and gather statistics of address reuse in the Bitcoin network.
 
-We also introduce collaborative (CoinJoin) transactions that prevent the privacy attacks that have been published in the literature.
+We also describe collaborative (CoinJoin) transactions that prevent the privacy attacks that have been published in the literature.
 Then we analyze the Blockchain to find transactions that could potentially be CoinJoin transactions.
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
@@ -620,15 +646,16 @@ And the traditional banking system keeps the transactions of their customers pri
 The public availability of the \emph{Blockchain} represents a novelty and its privacy implications are worth studying.
 Ideally, any new payment system should offer privacy guarantees at least as good as traditional systems.
 
-Bitcoin operation involves Bitcoin addresses, and both the Bitcoin community and previous research studies agree that address reuse is in general a bad practice.
+To receive a Bitcoin payment, the payee must provide the payer a Bitcon address to which the payment will be sent.
+Both the Bitcoin community and previous research studies agree that address reuse is in general a bad practice.
 It is recommended to generate a new address for each payment to be received.
-These addresses that are used only ones are called disposable addresses.
+These addresses that are used only once are called disposable addresses.
 
 In this paper we first review the basic elements of the Bitcoin system necessary for the subsequent discussion.
 Then we discuss the necessity of avoiding address re-use to prevent unnecessary privacy leakage.
 After that, we analyze the Blockchain to determine to which extent address reuse occurs in the Bitcoin community.
-Disposable addresses do not offer total protection against privacy leakage and we detail the remaining risks as well and possible solutions.
-
+Disposable addresses do not offer total protection against privacy leakage.
+We detail the remaining risks as well as possible solutions.  
 \section{Address Reuse}
 
 \subsection{Basic Bitcoin Elements}
@@ -647,7 +674,48 @@ In this sense, available outputs are just like available money, which can also o
 Another name for the available outputs is available coins.
 The network does not accept transactions that try to spend coins that have been spent before.
 
-Another important element of Bitcoin are public/private asymmetric cryptographical keys.
+An example transaction is presented in listing~\ref{lst:bitcoin}.
+Long hexadecimal strings have been trimmed to save space.
+A transaction is identified by a hash, which is the first field.
+This particular transaction has a single input (``in'') which is the first output (``n'':0) of a previous transaction with a hash starting with a777.
+
+The example transaction has two outputs worth 22 bitcoins and approximately 0.87 bitcoins.
+It is possible that the first output is a payment and the second one is a change.
+The ``scriptSig'' field in the input contains the signature required to spend the coins in the input.
+The ``scriptPubKey'' field in the outputs describes the signature required to spend those outputs.
+
+
+\begin{lstlisting}[language=json,firstnumber=1, caption= Example Bitcoin Transaction, label=lst:bitcoin]
+{
+"hash":"1093[...]",
+  "ver":1,
+  "vin_sz":1,
+  "vout_sz":2,
+  "lock_time":0,
+  "size":258,
+  "in":[
+    {
+      "prev_out":{
+        "hash":"a777[...]",
+        "n":0
+      },
+      "scriptSig":"3045[...]"
+    }
+  ],
+  "out":[
+    {
+      "value":"22.00000000",
+      "scriptPubKey":"OP_DUP OP_HASH160 17ed[...] OP_EQUALVERIFY OP_CHECKSIG"
+    },
+    {
+      "value":"0.87213300",
+      "scriptPubKey":"OP_DUP OP_HASH160 9319[...] OP_EQUALVERIFY OP_CHECKSIG"
+    }
+  ]
+} 
+\end{lstlisting}
+
+In the example we can observe that another important element of Bitcoin are public/private asymmetric cryptographical keys.
 The public key is hashed and coded with some redundancy into base58 addresses.
 These addresses are alphanumeric chains that can be used to receive funds.
 The outputs of a transaction can be sent to an address, which is simply a convenient representation of a public key.
