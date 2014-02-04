@@ -674,7 +674,7 @@ In this sense, available outputs are just like available money, which can also o
 Another name for the available outputs is available coins.
 The network does not accept transactions that try to spend coins that have been spent before.
 
-An example transaction is presented in listing~\ref{lst:bitcoin}.
+An example transaction is presented in Listing~\ref{lst:bitcoin}.
 Long hexadecimal strings have been trimmed to save space.
 A transaction is identified by a hash, which is the first field.
 This particular transaction has a single input (``in'') which is the first output (``n'':0) of a previous transaction with a hash starting with a777.
@@ -899,6 +899,30 @@ The total number of transactions in the Blockchain that could be CoinJoin transa
 \label{fig:coinjoin-candidates-matrix}
 \end{figure}
 
+\section{Related Work}
+
+The original paper proposing the Bitcoin network is \cite{nakamoto2008bpp}.
+This paper already recommends avoiding address re-use and mentions the privacy threats associated to the use of change addresses.
+
+An insightful analysis of the anonymity of the Bitcoin network is presented in \cite{reid2013aab}. 
+Among other aspects, this paper covers the mechanisms to link public keys as belonging to the same user and how external information can be used to identify the users.
+In some cases, the information publicly available on the Internet can be enough to identify users.
+Centralized servers such as exchanges are in an even better position to de-anonymize the network.
+
+A more recent work is \cite{meiklejohn2013fbc}, which describes in more detail the privacy attacks and the encountered difficulties in the process of de-anonymizing the Blockchain.
+The authors actively participate in the Bitcoin ecosystem to be able to tag the most important services in the graphs derived from the Blockchain.
+The Wikileaks case that we mention in our work is also considered in \cite{meiklejohn2013fbc}.
+
+Both \cite{reid2013aab} and \cite{meiklejohn2013fbc} pay attention to bitcoin thefts and in some cases can track the money until a fraction of the theft reaches an exchange.
+
+A simulation study on Bitcoin privacy \cite{androulaki2012eup} recommends the use of disposable addresses by the merchants for increased privacy protection.
+The paper also mentions the collaborative construction of transactions and considers that its widespread use is unlikely.
+
+\section{Conclusion}
+
+The public availability of all Bitcoin transactions poses privacy-related challenges on the protocol.
+In this work we discuss address re-use and CoinJoin transactions as two key privacy elements in Bitcoin.
+The Bitcoin community is advancing in the understanding of privacy threats and developing mitigating techniques.
 
 
 %The stations deterministically choose their transmission slots after successful transmissions.
